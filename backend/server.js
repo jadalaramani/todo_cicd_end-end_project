@@ -4,6 +4,9 @@ const cors = require('cors');
 const db = require('./db');
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+const DB_PATH = process.env.DB_PATH || './todo.db';
+
 app.use(cors());
 app.use(express.json());
 
