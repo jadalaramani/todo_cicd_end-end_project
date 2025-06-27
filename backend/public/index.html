@@ -74,13 +74,35 @@
     background-color:rgba(238,130,238,0.2);
     text-align: center;
   }
+      body {
+    background-image: url(''https://w0.peakpx.com/wallpaper/881/263/HD-wallpaper-quotes-inspiration-quotes-about-time-round-calendar.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    text-align: center;
+    min-height: 100vh;
+  }
+  
+    body::before {
+    content: '';
+    background: rgba(255, 255, 255, 0.7); /* white with transparency */
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1;
+  }
+
+  h2 {
+    margin-top: 10px;
+    color: #333;
+  }
+
   </style>
 </head>
 <body>
   <h2>📝 My ToDo List</h2>
 
-  <!-- ✅ Image -->
-  <img src="https://st3.depositphotos.com/2885805/15371/v/450/depositphotos_153711246-stock-illustration-business-morning-round-design.jpg" alt="Business Morning" />
 
   <!-- ✅ Live IST Date/Time -->
   <div id="datetime"></div>
