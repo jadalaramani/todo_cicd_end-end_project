@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Simple SQL CRUD</title>
+  <title>To-Do List (SQLite)</title>
   <style>
     body { font-family: sans-serif; padding: 20px; }
     input, button { padding: 10px; margin: 5px; }
@@ -14,7 +14,8 @@
   <ul id="todoList"></ul>
 
   <script>
-    const apiUrl = 'http://localhost:3000/api/todos';
+    // ✅ Dynamically set the API URL based on current location
+    const apiUrl = `${location.protocol}//${location.hostname}:3000/api/todos`;
 
     async function fetchTodos() {
       const res = await fetch(apiUrl);
@@ -24,22 +25,23 @@
       todos.forEach(todo => {
         const li = document.createElement('li');
         li.textContent = todo.text;
-        const btn = document.createElement('button');
-        btn.textContent = 'Delete';
-        btn.onclick = () => deleteTodo(todo.id);
-        li.appendChild(btn);
+        const del = document.createElement('button');
+        del.textContent = 'Delete';
+        del.onclick = () => deleteTodo(todo.id);
+        li.appendChild(del);
         list.appendChild(li);
       });
     }
 
     async function addTodo() {
-      const input = document.getElementById('todoInput');
+      const text = document.getElementById('todoInput').value;
+      if (!text) return;
       await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: input.value })
+        body: JSON.stringify({ text })
       });
-      input.value = '';
+      document.getElementById('todoInput').value = '';
       fetchTodos();
     }
 
@@ -48,7 +50,9 @@
       fetchTodos();
     }
 
+    // 🔃 Initial fetch
     fetchTodos();
   </script>
 </body>
 </html>
+
