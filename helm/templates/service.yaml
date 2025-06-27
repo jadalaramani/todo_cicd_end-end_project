@@ -8,6 +8,6 @@ spec:
     app: {{ .Release.Name }}
   ports:
     - name: http
-      port: {{ .Values.service.port }}
+      port: {{ .Values.service.port | default 3000  }}
       targetPort: 3000
       protocol: TCP
