@@ -58,6 +58,16 @@ pipeline {
         }
       }
     }
+        stage('Helm Deploy') {
+      steps {
+        sh """
+        helm upgrade --install todo-release ./helm-chart \
+          --set image.repository=${DOCKER_HUB_USER}/${IMAGE_NAME} \
+          --set image.tag=${IMAGE_TAG}
+        """
+      }
+    }
+  }
   }
 
   post {
