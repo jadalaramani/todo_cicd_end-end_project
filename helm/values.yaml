@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ramanijadala/todo-app
-  tag: build-1      # Replace with correct tag or use --set
+  tag: latest      # Replace with correct tag or use --set
   pullPolicy: IfNotPresent
 
 service:
