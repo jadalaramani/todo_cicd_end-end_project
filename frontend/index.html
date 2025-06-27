@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>To-Do List (SQLite)</title>
+  <title>ToDo App (SQLite)</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    input, button { padding: 10px; margin: 5px; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, button, select { padding: 10px; margin: 5px; }
   </style>
 </head>
 <body>
-  <h2>To-Do List (SQLite)</h2>
+  <h2>ToDo List with Status</h2>
+
   <input id="todoInput" placeholder="Add task..." />
+  <select id="statusSelect">
+    <option value="Pending">Pending</option>
+    <option value="In Progress">In Progress</option>
+    <option value="Done">Done</option>
+  </select>
   <button onclick="addTodo()">Add</button>
+
   <ul id="todoList"></ul>
 
   <script>
-    // ✅ Dynamically set the API URL based on current location
     const apiUrl = `${location.protocol}//${location.hostname}:3000/api/todos`;
 
     async function fetchTodos() {
@@ -24,7 +30,7 @@
       list.innerHTML = '';
       todos.forEach(todo => {
         const li = document.createElement('li');
-        li.textContent = todo.text;
+        li.textContent = `${todo.text} [${todo.status}]`;
         const del = document.createElement('button');
         del.textContent = 'Delete';
         del.onclick = () => deleteTodo(todo.id);
@@ -35,11 +41,12 @@
 
     async function addTodo() {
       const text = document.getElementById('todoInput').value;
+      const status = document.getElementById('statusSelect').value;
       if (!text) return;
       await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
+        body: JSON.stringify({ text, status })
       });
       document.getElementById('todoInput').value = '';
       fetchTodos();
@@ -50,7 +57,6 @@
       fetchTodos();
     }
 
-    // 🔃 Initial fetch
     fetchTodos();
   </script>
 </body>

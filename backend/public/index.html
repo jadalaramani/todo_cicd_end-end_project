@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ToDo App (SQLite)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+      text-align: center;
+    }
+
+    img {
+      max-width: 300px;
+      margin-bottom: 20px;
+    }
+
+    #datetime {
+      font-weight: bold;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .task-inputs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    input, button, select {
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      max-width: 800px;
+      margin: auto;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    .icon {
+      margin-right: 5px;
+      color: #444;
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color:rgba(238,130,238,0.2);
+    }
+
+    body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color:rgba(238,130,238,0.2);
+    text-align: center;
+  }
+  </style>
+</head>
+<body>
+  <h2>📝 My ToDo List</h2>
+
+  <!-- ✅ Image -->
+  <img src="https://st3.depositphotos.com/2885805/15371/v/450/depositphotos_153711246-stock-illustration-business-morning-round-design.jpg" alt="Business Morning" />
+
+  <!-- ✅ Live IST Date/Time -->
+  <div id="datetime"></div>
+
+  <!-- ✅ Inputs -->
+  <div class="task-inputs">
+    <input id="usernameInput" placeholder="Your name..." />
+    <input id="todoInput" placeholder="Add task..." />
+    <select id="statusSelect">
+      <option value="Pending">Pending</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Done">Done</option>
+    </select>
+    <button onclick="addTodo()">Add</button>
+  </div>
+
+  <!-- ✅ Task List -->
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Status</th>
+        <th>User</th>
+        <th>Created At</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="todoList"></tbody>
+  </table>
+
+  <script>
+    const apiUrl = `${location.protocol}//${location.hostname}:3000/api/todos`;
+
+    // 🕒 Show current time in IST
+    function updateDateTime() {
+      const now = new Date();
+      const options = {
+        timeZone: 'Asia/Kolkata',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true
+      };
+      const formatted = new Intl.DateTimeFormat('en-IN', options).format(now);
+      document.getElementById('datetime').textContent = `📅 ${formatted}`;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // 📥 Fetch and display tasks
+    async function fetchTodos() {
+      const res = await fetch(apiUrl);
+      const todos = await res.json();
+      const list = document.getElementById('todoList');
+      list.innerHTML = '';
+      todos.forEach(todo => {
+        const createdAt = new Intl.DateTimeFormat('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          year: 'numeric', month: 'numeric', day: 'numeric',
+          hour: 'numeric', minute: 'numeric', second: 'numeric',
+          hour12: true
+        }).format(new Date(todo.created_at));
+        list.innerHTML += `
+          <tr>
+            <td><strong>${todo.text}</strong></td>
+            <td>${todo.status}</td>
+            <td>👤 ${todo.username || 'Anonymous'}</td>
+            <td>🕒 ${createdAt}</td>
+            <td><button class="delete-btn" onclick="deleteTodo(${todo.id})">Delete</button></td>
+          </tr>`;
+      });
+    }
+
+    // ➕ Add a task
+    async function addTodo() {
+      const text = document.getElementById('todoInput').value.trim();
+      const username = document.getElementById('usernameInput').value.trim() || 'Anonymous';
+      const status = document.getElementById('statusSelect').value;
+      if (!text) return;
+      await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, status, username })
+      });
+      document.getElementById('todoInput').value = '';
+      fetchTodos();
+    }
+
+    // ❌ Delete a task
+    async function deleteTodo(id) {
+      await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+      fetchTodos();
+    }
+
+    fetchTodos();
+    setInterval(fetchTodos, 10000); // 🔁 Auto-refresh every 10s
+  </script>
+</body>
+</html>
+
