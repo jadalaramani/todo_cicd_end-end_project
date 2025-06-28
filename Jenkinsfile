@@ -50,7 +50,7 @@ pipeline {
       }
     }
 
-    stage('Docker Run') {
+    stage('Docker Run (optional)') {
       steps {
         script {
           sh "docker rm -f $CONTAINER_NAME || true"
@@ -58,17 +58,34 @@ pipeline {
         }
       }
     }
-        stage('Helm Deploy') {
-      steps {
-        sh """
-        helm upgrade --install todo-release ./helm-chart \
-          --set image.repository=${DOCKER_HUB_USER}/${IMAGE_NAME} \
-          --set image.tag=${IMAGE_TAG}
-        """
-      }
+stage('eks deploy'){
+ steps {
+    withKubeConfig(
+      credentialsId: 'kubeconfig',
+      clusterName: 'my-cluster',
+      contextName: 'my-cluster',
+      namespace: 'todons',
+      restrictKubeConfigAccess: false,
+      serverUrl: 'https://4F5DD3DBA1B43651CA5AA60E9C3EDCB4.gr7.us-east-1.eks.amazonaws.com'
+    ) {
+      sh '''
+        echo "🚀 Deploying application via Helm..."
+        echo "📁 Current workspace: $(pwd)"
+        echo "📂 Checking for Helm chart..."
+        ls -l ./helm
+        helm upgrade --install todo-release ./helm \
+          --namespace todons \
+          --set image.repository=${DOCKER_HUB_USER}/${IMAGE_BASE} \
+          --set image.tag=${IMAGE_TAG} \
+          --set service.type=LoadBalancer
+
+        echo "✅ Deployment triggered"
+        #kubectl get all -n todons
+      '''
     }
   }
-  }
+}
+}
 
   post {
     success {
