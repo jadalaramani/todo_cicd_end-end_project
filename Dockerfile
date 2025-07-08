@@ -1,24 +1,38 @@
-FROM node:18-alpine
+# ---------- Stage 1: Build ----------
+FROM node:18-alpine AS builder
 
-# Create app folder
+# Set working directory
 WORKDIR /app
 
-# Copy dependencies and install
+# Copy dependency files
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
-# Copy app files
+# Copy the rest of the application files
 COPY backend/ backend/
+
+# ---------- Stage 2: Runtime ----------
+FROM node:18-alpine
+
+# Create app directory
+WORKDIR /app
 
 # Create non-root user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# ✅ Fix permissions to allow DB file to be created
-RUN mkdir -p /app/backend && chown -R appuser:appgroup /app
+# Copy only necessary files from builder stage
+COPY --from=builder /app /app
 
+# Set ownership to appuser
+RUN chown -R appuser:appgroup /app
+
+# Switch to non-root user
 USER appuser
 
-# Expose backend port
+# Expose port
 EXPOSE 3000
 
+# Start the app
 CMD ["node", "backend/server.js"]
