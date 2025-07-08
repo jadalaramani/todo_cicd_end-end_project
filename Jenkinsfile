@@ -18,12 +18,7 @@ pipeline {
       }
     }
 
-    stage('Install Dependencies') {
-      steps {
-        sh 'cd backend && npm install'
-      }
-    }
-   
+
     stage('Docker Build') {
       steps {
         sh "docker build -t $LOCAL_IMAGE ."
@@ -66,7 +61,7 @@ stage('eks deploy'){
       contextName: 'my-cluster',
       namespace: 'todons',
       restrictKubeConfigAccess: false,
-      serverUrl: 'https://4F5DD3DBA1B43651CA5AA60E9C3EDCB4.gr7.us-east-1.eks.amazonaws.com'
+      serverUrl: 'https://71EBBEA6021B1F195E6BA6F54211B023.gr7.us-east-1.eks.amazonaws.com'
     ) {
       sh '''
         echo "🚀 Deploying application via Helm..."
@@ -80,7 +75,7 @@ stage('eks deploy'){
           --set service.type=LoadBalancer
 
         echo "✅ Deployment triggered"
-        #kubectl get all -n todons
+        kubectl get svc -n todons
       '''
     }
   }
@@ -94,5 +89,17 @@ stage('eks deploy'){
     failure {
       echo "❌ Build failed"
     }
+      always {
+    emailext (
+               subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+               body: "Build details: ${env.BUILD_URL}",
+                to: 'mindcircuit2025@gmail.com',
+                from: 'jenkins@example.com',
+                replyTo: 'jenkins@example.com',
+                
+                
+            )
+      }
+    
   }
 }
