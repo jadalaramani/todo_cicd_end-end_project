@@ -51,15 +51,17 @@ eksctl create cluster --name my-cluster --region us-east-1 --nodes 2 --node-type
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 ```
 # Cloud watch 
-
+```
 helm repo add aws-observability https://aws.github.io/eks-charts
 helm repo update
 helm install aws-cloudwatch-metrics   aws-observability/aws-cloudwatch-metrics   --namespace amazon-cloudwatch   --create-namespace   --set clusterName=my-cluster   --set region=us-east-1   --set serviceAccount.create=false   --set serviceAccount.name=cloudwatch-agent
 kubectl get all -n amazon-cloudwatch
-
+```
 # using eksctl
+```
+aws eks describe-cluster --name my-cluster --query "cluster.identity.oidc.issuer" --output text
 eksctl utils associate-iam-oidc-provider   --region us-east-1   --cluster my-cluster   --approve
 aws iam attach-role-policy   --role-name EKS-CloudWatchAgent-Role   --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
 kubectl annotate serviceaccount cloudwatch-agent -n amazon-cloudwatch eks.amazonaws.com/role-arn=arn:aws:iam::141559732042:role/EKS-CloudWatchAgent-Role --overwrite
 kubectl delete pod -n amazon-cloudwatch -l app.kubernetes.io/name=aws-cloudwatch-metrics
-
+```
