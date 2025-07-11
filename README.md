@@ -3,25 +3,37 @@
  A full-stack To-Do List application using:
 
  Frontend: HTML/CSS/JS (index.html)
+ 
  Backend: Node.js + SQLite
+
  Database: SQLite (local file DB)
 
  # Goal of project
 
  Containerize the application.
+ 
  Set up CI/CD pipeline using Jenkins.
+ 
  Push Docker image to Docker Hub.
+ 
  Deploy to AWS EKS using Helm.
+ 
  Use RBAC and ServiceAccount securely.
+ 
  Automate end-to-end workflow.
  
 # This project demonstrates a full DevOps workflow including:
 
  CI/CD automation
+ 
  Dockerization
+ 
  Kubernetes orchestration
+ 
  Helm packaging
+ 
  RBAC security
+ 
  Cloud deployment
  
 # Install git
