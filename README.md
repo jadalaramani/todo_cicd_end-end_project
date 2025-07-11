@@ -35,6 +35,37 @@
  RBAC security
  
  Cloud deployment
+
+ # Prerequisites
+ Install the following tools on your system or Jenkins node:
+
+ Docker
+
+ kubectl
+
+ eksctl
+
+ Helm
+
+ AWS CLI configured with IAM credentials
+
+ Jenkins with:
+
+ Docker installed
+
+ Kubernetes CLI plugin
+
+ Kubernetes
+
+ Kubernetes client api
+
+ Kubernetes credentials
+
+ k8s credential provider
+
+ Docker Pipeline plugin
+
+ Pipeline stage view
  
 # Install git
 ```
