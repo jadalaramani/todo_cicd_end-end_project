@@ -49,7 +49,7 @@
 
  AWS CLI configured with IAM credentials
 
- Jenkins with Below plugins : 
+ # Jenkins with Below plugins : 
 
  Kubernetes CLI plugin
 
