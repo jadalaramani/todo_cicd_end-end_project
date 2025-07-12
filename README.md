@@ -61,9 +61,11 @@
 
  k8s credential provider
 
+ Docker
+
  Docker Pipeline plugin
 
- Email template
+ Email Extention template
 
  Pipeline stage view
  
