@@ -1,12 +1,16 @@
+It’s a full-stack To-Do list application designed primarily to demonstrate a complete DevOps CI/CD pipeline with Kubernetes deployment. Here's a breakdown 
+
+of the project components and objective
+
 # todo_cicd_end-end_project
 
  A full-stack To-Do List application using:
 
- Frontend: HTML/CSS/JS (index.html)
+ Frontend: HTML/CSS/JS (index.html) -  Served from a public folder, with index.html as the main entry point.
  
- Backend: Node.js + SQLite
+ Backend: Node.js (Express.js framework)
 
- Database: SQLite (local file DB)
+ Database: SQLite (local .db file named todo.db)
 
  # Goal of project
 
