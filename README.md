@@ -136,7 +136,54 @@ sudo yum install jenkins -y
 sudo systemctl enable jenkins
 systemctl start jenkins
 ```
+# SonarQube Setup
 
+* Ensure SonarQube is up and running (local or cloud).
+* Install the SonarQube Scanner for Jenkins plugin.
+
+#### In Jenkins:
+
+* Add your SonarQube server in Manage Jenkins > Configure System > SonarQube servers.
+
+* also update in Global tool settings of SonarQubeScanner ( Manage Jenkins > tools > add installation) 
+
+* Add credentials (usually a Sonar token).
+
+Name it like SonarQubeServer.
+
+#### sonar-project.properties to Your Repo Root: 
+
+```
+sonar.projectKey=todo-node-app
+sonar.projectName=Todo Node.js App
+sonar.projectVersion=1.0
+sonar.sources=.
+sonar.language=js
+sonar.sourceEncoding=UTF-8
+```
+#### Configure Quality Gate in SonarQube
+
+Create or Edit a Quality Gate in SonarQube
+
+Log in to SonarQube as an admin → Quality Gates tab.
+
+Either edit “Sonar way” or click “Create” to build your own gate.
+
+Click “Set as Default” so every new project—and therefore your todo-node-app—uses it automatically.
+
+######  Add a Webhook for Jenkins in sonarqube
+
+SonarQube pushes Quality Gate results back to Jenkins through a webhook call.
+
+SonarQube → Administration ▶ Configuration ▶ Webhooks.
+
+Click “Create”
+
+Name: Jenkins
+
+URL: http://<JENKINS_URL>/sonarqube-webhook/
+
+Save.
 
 # Kubectl and eksctl
 ```
