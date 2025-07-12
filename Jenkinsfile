@@ -102,7 +102,7 @@ stage('eks deploy'){
 
   post {
     success {
-      echo "✅ Image pushed: $REMOTE_IMAGE"
+      echo "✅ Image pushed: $REMOTE_IMAGE and Build Success"
     }
     failure {
       echo "❌ Build failed"
