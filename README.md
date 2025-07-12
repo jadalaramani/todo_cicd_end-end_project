@@ -139,9 +139,13 @@ systemctl start jenkins
 # SonarQube Setup
 
 * Ensure SonarQube is up and running (local or cloud).
-* Install the SonarQube Scanner for Jenkins plugin.
+```
+docker run --itd --name sonar -p 9000:9000 sonarqube
+```
 
 #### In Jenkins:
+
+* Install the SonarQube Scanner for Jenkins plugin.
 
 * Add your SonarQube server in Manage Jenkins > Configure System > SonarQube servers.
 
@@ -151,7 +155,7 @@ systemctl start jenkins
 
 Name it like SonarQubeServer.
 
-#### sonar-project.properties to Your Repo Root: 
+#### sonar-project.properties to Your GItHUb Repo Root location: 
 
 ```
 sonar.projectKey=todo-node-app
