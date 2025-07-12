@@ -14,11 +14,29 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/jadalaramani/my_project.git'
+        git branch: 'main', url: 'https://github.com/jadalaramani/todo_cicd_end-end_project.git'
       }
     }
 
-
+stage('SONARQUBE ANALYSIS') {
+  environment {
+    SCANNER_HOME = tool 'SonarQubeScanner' 
+  }
+  steps {
+    withSonarQubeEnv('SonarQubeServer') { 
+      sh """
+        ${SCANNER_HOME}/bin/sonar-scanner
+      """
+    }
+  }
+}
+stage('QUALITY GATE') {
+    steps {
+        timeout(time: 2, unit: 'MINUTES') {   
+            waitForQualityGate abortPipeline: true
+        }
+    }
+}
     stage('Docker Build') {
       steps {
         sh "docker build -t $LOCAL_IMAGE ."
@@ -34,7 +52,7 @@ pipeline {
     stage('Login to Docker Hub') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-          sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+         sh ' docker login -u $DOCKER_USER  -p $DOCKER_PASS'
         }
       }
     }
