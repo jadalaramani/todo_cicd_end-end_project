@@ -63,6 +63,8 @@
 
  Docker Pipeline plugin
 
+ Email template
+
  Pipeline stage view
  
 # Install git
