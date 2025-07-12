@@ -48,6 +48,14 @@ stage('QUALITY GATE') {
         sh "docker tag $LOCAL_IMAGE $REMOTE_IMAGE"
       }
     }
+    stage('Trivy Vulnerability Scan') {
+      steps {
+        sh """
+          echo 'Running Trivy vulnerability scan...'
+               docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image $REMOTE_IMAGE 
+        """
+      }
+    }
 
     stage('Login to Docker Hub') {
       steps {
