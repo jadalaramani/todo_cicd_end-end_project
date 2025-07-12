@@ -178,3 +178,128 @@ kubectl get pods -n amazon-cloudwatch
 
 kubectl logs -n amazon-cloudwatch daemonset/aws-cloudwatch-metrics | head -n 50
 ```
+
+# Alters
+
+
+# Create an SNS Topic for Alert Notifications
+
+```bash
+aws sns create-topic --name eks-monitoring-alerts
+```
+
+Save the ARN it returns (e.g., `arn:aws:sns:us-east-1:123456789012:eks-monitoring-alerts`).
+
+
+# Subscribe to the Topic (Email, SMS, etc.)
+
+```bash
+aws sns subscribe \
+  --topic-arn arn:aws:sns:us-east-1:123456789012:eks-monitoring-alerts \
+  --protocol email \
+  --notification-endpoint your-email@example.com
+```
+Go to your email and **confirm the subscription**.
+
+
+
+# Choose Metric for Alert
+
+You can alert on:
+
+* **Node CPU Utilization**
+* **Memory Utilization**
+* **Container Restarts**
+* **Pod not Ready count**
+  
+> **CloudWatch → Metrics → ContainerInsights → EKS Cluster Name**
+
+
+
+# Create a CloudWatch Alarm for a Metric
+
+Example: Alarm for CPU > 80% for 5 minutes
+
+```bash
+aws cloudwatch put-metric-alarm \
+  --alarm-name "High-CPU-EKS" \
+  --metric-name "node_cpu_utilization" \
+  --namespace "ContainerInsights" \
+  --statistic Average \
+  --period 300 \
+  --threshold 80 \
+  --comparison-operator GreaterThanThreshold \
+  --evaluation-periods 1 \
+  --alarm-actions arn:aws:sns:us-east-1:123456789012:eks-monitoring-alerts \
+  --dimensions Name=ClusterName,Value=my-cluster \
+  --region us-east-1
+```
+
+```bash
+aws cloudwatch list-metrics --namespace ContainerInsights --dimensions Name=ClusterName,Value=my-cluster
+```
+
+
+# Create a CloudWatch Alarm for CPU (Test)
+
+```bash
+aws cloudwatch put-metric-alarm \
+  --alarm-name "EKS-HighCPU-Alert" \
+  --metric-name node_cpu_utilization \
+  --namespace ContainerInsights \
+  --statistic Average \
+  --period 300 \
+  --threshold 80 \
+  --comparison-operator GreaterThanThreshold \
+  --evaluation-periods 1 \
+  --dimensions Name=ClusterName,Value=my-cluster \
+  --alarm-actions arn:aws:sns:us-east-1:123456789012:eks-monitoring-alerts \
+  --region us-east-1
+```
+
+
+# Force High CPU on a Node (For Test)
+
+Deploy a stress pod to simulate high CPU:
+
+```yaml
+# stress-cpu.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cpu-stress
+spec:
+  containers:
+  - name: stress
+    image: progrium/stress
+    args: ["--cpu", "4", "--timeout", "600"]
+```
+
+Apply it:
+
+```bash
+kubectl apply -f stress-cpu.yaml
+```
+
+
+#  Check Alarm State
+
+```bash
+aws cloudwatch describe-alarms \
+  --alarm-names "EKS-HighCPU-Alert" \
+  --query "MetricAlarms[0].StateValue"
+```
+
+Expected: `ALARM` 
+
+# Cleanup
+
+```bash
+kubectl delete pod cpu-stress
+aws cloudwatch delete-alarms --alarm-names "EKS-HighCPU-Alert"
+```
+
+
+
+
+
