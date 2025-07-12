@@ -37,6 +37,7 @@
  Cloud deployment
 
  # Prerequisites
+ 
  Install the following tools on your system or Jenkins node:
 
  Docker
@@ -68,6 +69,8 @@
  Email Extention template
 
  Pipeline stage view
+
+ Sonarqube Scanner 
 
 # How to test locally or Manually ? 
 
