@@ -116,6 +116,7 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 # Cloud watch 
 
 # Create IAM Role with Trust Policy for IRSA
+trust-policy.json
 ```
 {
   "Version": "2012-10-17",
