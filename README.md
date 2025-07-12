@@ -69,11 +69,12 @@
 
  Pipeline stage view
 
-# HOW TO TEST LOCALLY / MANUALLY ??
+# How to test locally or Manually ? 
 
 
 Create  Amazon linux EC2 Instance to test it locally . 
 ```
+yum install git -y
 cd /opt
 git clone https://github.com/jadalaramani/todo_cicd_end-end_project.git
 cd todo_cicd_end-end_project/
@@ -106,8 +107,9 @@ sudo yum install jenkins -y
 sudo systemctl enable jenkins
 systemctl start jenkins
 ```
+# How to containerize  Locally
 
-
+```
 # Docker Installation
 
 ```
@@ -119,9 +121,6 @@ sudo chmod 666 /var/run/docker.sock
 sudo systemctl restart docker
 ```
 
-# How to containerize  Locally
-
-```
 docker -v
 
 cat Dockerfile
@@ -140,6 +139,10 @@ docker ps
 
 curl http://localhost:3001
 ```
+
+
+
+
 
 # Kubectl and eksctl
 ```
