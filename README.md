@@ -90,26 +90,9 @@ node server.js &
 
 ---> now access from browser with port 3000 ( PublicIP:3000 )
  
-# Install git
-```
-yum install git -y
-```
-
-# Jenkins Installation on Amazon Linux
-```
-sudo yum update -y
-sudo wget -O /etc/yum.repos.d/jenkins.repo \
-    https://pkg.jenkins.io/redhat-stable/jenkins.repo
-sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-sudo yum upgrade
-sudo yum install java-17-amazon-corretto -y
-sudo yum install jenkins -y
-sudo systemctl enable jenkins
-systemctl start jenkins
-```
 # How to containerize  Locally
 
-```
+
 # Docker Installation
 
 ```
@@ -120,7 +103,7 @@ sudo usermod -aG docker jenkins
 sudo chmod 666 /var/run/docker.sock
 sudo systemctl restart docker
 ```
-
+```
 docker -v
 
 cat Dockerfile
@@ -141,7 +124,18 @@ curl http://localhost:3001
 ```
 
 
-
+# Jenkins Installation on Amazon Linux
+```
+sudo yum update -y
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+sudo yum upgrade
+sudo yum install java-17-amazon-corretto -y
+sudo yum install jenkins -y
+sudo systemctl enable jenkins
+systemctl start jenkins
+```
 
 
 # Kubectl and eksctl
