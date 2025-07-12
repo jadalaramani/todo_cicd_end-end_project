@@ -25,6 +25,8 @@ of the project components and objective
  Use RBAC and ServiceAccount securely.
  
  Automate end-to-end workflow.
+
+ Congifure Monitoring & Observability 
  
 # This project demonstrates a full DevOps workflow including:
 
