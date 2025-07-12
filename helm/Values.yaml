@@ -2,11 +2,11 @@ replicaCount: 1
 
 image:
   repository: ramanijadala/todo-app
-  tag: latest      # Replace with correct tag or use --set
+  tag: latest
   pullPolicy: IfNotPresent
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 3000
 
 resources:
@@ -16,3 +16,17 @@ resources:
   requests:
     cpu: 250m
     memory: 128Mi
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: 3000
+  initialDelaySeconds: 5
+  periodSeconds: 10
