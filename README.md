@@ -107,6 +107,7 @@ sudo systemctl enable jenkins
 systemctl start jenkins
 ```
 
+
 # Docker Installation
 
 ```
@@ -116,6 +117,28 @@ systemctl enable docker
 sudo usermod -aG docker jenkins
 sudo chmod 666 /var/run/docker.sock
 sudo systemctl restart docker
+```
+
+# How to containerize  Locally
+
+```
+docker -v
+
+cat Dockerfile
+
+#### Build the Docker image
+docker build -t todoimage:v1 .
+
+docker images
+
+##### Run the container in detached mode and map ports
+docker run -itd -p 3001:3000 todoimage:v1
+
+docker ps
+
+##### Test the app from the host (browser or curl)
+
+curl http://localhost:3001
 ```
 
 # Kubectl and eksctl
