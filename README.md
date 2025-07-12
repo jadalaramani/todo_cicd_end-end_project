@@ -49,9 +49,7 @@
 
  AWS CLI configured with IAM credentials
 
- Jenkins with:
-
- Docker installed
+ Jenkins with Below plugins : 
 
  Kubernetes CLI plugin
 
