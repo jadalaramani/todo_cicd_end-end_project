@@ -211,10 +211,57 @@ sudo mv /tmp/eksctl /usr/local/bin
 eksctl create cluster --name my-cluster 
 ```
 
+# EKS cluster setup using terraform and jenkins
+
+github url for setup :
+```
+https://github.com/adarsh0331/Eks_Cluster_with_terraform.git
+```
+
 # Helm Install
 ```
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 ```
+
+# Configuring Email in jenkins
+
+## 🛠️ Step 1: Install Required Plugin
+
+1. Go to **Jenkins → Manage Jenkins → Plugins**
+2. Install:
+
+**Email Extension Plugin** 
+
+## 🔑 Step 2: Enable App Password in Gmail (Required)
+
+Since Gmail blocks less secure apps, you need to create an **App Password**:
+
+1. Go to your Google Account → **Security**
+2. Enable **2-Step Verification**
+3. After that, go to **App passwords**
+4. Generate an app password (e.g., for “Mail” on “Other (Custom)”)
+5. Note the 16-character password (you’ll use this in Jenkins)
+
+## Step 3: Configure Email Settings in Jenkins
+
+### A. Go to:
+
+**Jenkins → Manage Jenkins → Configure System**
+
+###  B. Scroll to **Extended E-mail Notification** section and fill:
+
+| Field                      | Value                                                    |
+| -------------------------- | -------------------------------------------------------- |
+| SMTP server                | `smtp.gmail.com`                                         |
+| SMTP Port                  | `465`                                                    |
+| Use SSL                    | ✅ checked                                               |
+| Use TLS                    | ✅ Checked                                                |
+| SMTP Authentication        | ✅ Checked                                                |
+| SMTP Username              | your Gmail address (e.g., `you@gmail.com`)               |
+| SMTP Password              | 16-digit App Password (not your Gmail password)          |
+
+test the mail
+
 # Cloud watch 
 
 # Create IAM Role with Trust Policy for IRSA
