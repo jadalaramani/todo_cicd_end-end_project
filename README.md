@@ -225,14 +225,14 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # Configuring Email in jenkins
 
-## 🛠️ Step 1: Install Required Plugin
+##  Step 1: Install Required Plugin
 
 1. Go to **Jenkins → Manage Jenkins → Plugins**
 2. Install:
 
 **Email Extension Plugin** 
 
-## 🔑 Step 2: Enable App Password in Gmail (Required)
+##  Step 2: Enable App Password in Gmail
 
 Since Gmail blocks less secure apps, you need to create an **App Password**:
 
@@ -243,10 +243,14 @@ Since Gmail blocks less secure apps, you need to create an **App Password**:
 5. Note the 16-character password (you’ll use this in Jenkins)
 
 ## Step 3: Configure Email Settings in Jenkins
+* Firstly add in jenkins credentials: username and password
+- username: your@gmail.com
+- password: 16character password
+- description:email-cred
 
 ### A. Go to:
 
-**Jenkins → Manage Jenkins → Configure System**
+**Jenkins → Manage Jenkins →  System**
 
 ###  B. Scroll to **Extended E-mail Notification** section and fill:
 
@@ -256,11 +260,23 @@ Since Gmail blocks less secure apps, you need to create an **App Password**:
 | SMTP Port                  | `465`                                                    |
 | Use SSL                    | ✅ checked                                               |
 | Use TLS                    | ✅ Checked                                                |
+
+* In Advance add credentials of email-cred 
+
+### C. Next scroll down **E-mail Notification** section and fill 
+| Field                      | Value                                                    |
+| -------------------------- | -------------------------------------------------------- |
+| SMTP server                | `smtp.gmail.com`                                         |
+| Use SSL                    | ✅ checked                                               |
+| Use TLS                    | ✅ Checked                                                |
 | SMTP Authentication        | ✅ Checked                                                |
-| SMTP Username              | your Gmail address (e.g., `you@gmail.com`)               |
+| SMTP Username              | your Gmail address (e.g., `your@gmail.com`)               |
 | SMTP Password              | 16-digit App Password (not your Gmail password)          |
 
-test the mail
+#### smtp port 465
+#### reply to addresss: your@gmail.com
+
+- test the mail
 
 # Cloud watch 
 
