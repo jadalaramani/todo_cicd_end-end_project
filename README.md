@@ -472,6 +472,139 @@ aws cloudwatch delete-alarms --alarm-names "EKS-HighCPU-Alert"
 ```
 
 
+    aws iam update-assume-role-policy   --role-name EKS-CloudWatchAgent-Role   --policy-document file://trust-policy.json
+ aws iam create-role   --role-name EKS-CloudWatchAgent-Role   --assume-role-policy-document file://trust-policy.json
+  aws iam attach-role-policy   --role-name EKS-CloudWatchAgent-Role   --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
 
 
+=======================
 
+eksctl utils associate-iam-oidc-provider   --region us-east-1   --cluster my-cluster   --approve
+ eksctl create iamserviceaccount   --name cloudwatch-agent   --namespace amazon-cloudwatch   --cluster my-cluster   --region us-east-1   --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy   --approve   --override-existing-serviceaccounts
+  helm repo add eks https://aws.github.io/eks-charts
+   helm repo update
+   helm upgrade --install aws-cloudwatch-metrics eks/aws-cloudwatch-metrics   --namespace amazon-cloudwatch   --set clusterName=my-cluster   --set region=us-east-1   --set serviceAccount.create=false   --set serviceAccount.name=cloudwatch-agent
+    kubectl get pods -n amazon-cloudwatch
+   kubectl logs -n amazon-cloudwatch daemonset/aws-cloudwatch-metrics | head -n 50
+  kubectl logs aws-cloudwatch-metrics-q5tg7 -n amazon-cloudwatch
+    aws logs describe-log-groups --log-group-name-prefix /aws/containerinsights/my-cluster
+    ===================================================
+
+
+## 🟦 1. Create IAM Role for IRSA (If not using `eksctl`)
+
+> Use **only if not creating via `eksctl`**
+
+### ➤ Create Trust Policy File: `trust-policy.json`
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::<ACCOUNT_ID>:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/<OIDC_ID>"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "oidc.eks.us-east-1.amazonaws.com/id/<OIDC_ID>:sub": "system:serviceaccount:amazon-cloudwatch:cloudwatch-agent"
+        }
+      }
+    }
+  ]
+}
+```
+
+### ➤ Create IAM Role
+
+```bash
+aws iam create-role \
+  --role-name EKS-CloudWatchAgent-Role \
+  --assume-role-policy-document file://trust-policy.json
+```
+
+### ➤ Update Trust Policy (if needed)
+
+```bash
+aws iam update-assume-role-policy \
+  --role-name EKS-CloudWatchAgent-Role \
+  --policy-document file://trust-policy.json
+```
+
+### ➤ Attach CloudWatch Agent Policy
+
+```bash
+aws iam attach-role-policy \
+  --role-name EKS-CloudWatchAgent-Role \
+  --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+```
+
+
+## 🟨 2. Associate IAM OIDC Provider (One-time per cluster)
+
+```bash
+eksctl utils associate-iam-oidc-provider \
+  --region us-east-1 \
+  --cluster my-cluster \
+  --approve
+```
+
+
+## 🟩 3. Create IAM Service Account using IRSA
+
+```bash
+eksctl create iamserviceaccount \
+  --name cloudwatch-agent \
+  --namespace amazon-cloudwatch \
+  --cluster my-cluster \
+  --region us-east-1 \
+  --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy \
+  --approve \
+  --override-existing-serviceaccounts
+```
+
+
+## 🟦 4. Install CloudWatch Agent using Helm
+
+### ➤ Add and Update Helm Repo
+
+```bash
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+```
+
+### ➤ Install Helm Chart
+
+```bash
+helm upgrade --install aws-cloudwatch-metrics eks/aws-cloudwatch-metrics \
+  --namespace amazon-cloudwatch \
+  --set clusterName=my-cluster \
+  --set region=us-east-1 \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=cloudwatch-agent
+```
+
+
+## 🟪 5. Verify Pod and Logs
+
+### ➤ Check Pod
+
+```bash
+kubectl get pods -n amazon-cloudwatch
+```
+
+### ➤ Check Logs
+
+```bash
+kubectl logs -n amazon-cloudwatch daemonset/aws-cloudwatch-metrics | head -n 50
+kubectl logs aws-cloudwatch-metrics-q5tg7 -n amazon-cloudwatch
+```
+
+
+## 🟫 6. Confirm Log Group in CloudWatch
+
+```bash
+aws logs describe-log-groups --log-group-name-prefix /aws/containerinsights/my-cluster
+```
