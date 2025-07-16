@@ -221,7 +221,6 @@ https://github.com/adarsh0331/Eks_Cluster_with_terraform.git
 -  S3 BUCKET CREATION ( Some times you may get bucket name confilt , as s3 bucket name is globally unique ) 
 -  DYNAMO  DB SETUP
 -  aws eks update-kubeconfig --region us-east-1 --name my-eks-cluster
-
 - RBAC SET UP IN RBAC FOLDER 
 
 # Helm Install
