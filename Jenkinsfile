@@ -101,6 +101,7 @@ stage('eks deploy'){
           --set service.type=LoadBalancer
 
         echo "✅ Deployment triggered"
+        sleep 60
         kubectl get svc -n todons
       '''
     }
