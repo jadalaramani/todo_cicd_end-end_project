@@ -470,23 +470,32 @@ Expected: `ALARM`
 kubectl delete pod cpu-stress
 aws cloudwatch delete-alarms --alarm-names "EKS-HighCPU-Alert"
 ```
+```
 
-
-    aws iam update-assume-role-policy   --role-name EKS-CloudWatchAgent-Role   --policy-document file://trust-policy.json
+ aws iam update-assume-role-policy   --role-name EKS-CloudWatchAgent-Role   --policy-document file://trust-policy.json
+    
  aws iam create-role   --role-name EKS-CloudWatchAgent-Role   --assume-role-policy-document file://trust-policy.json
+  
   aws iam attach-role-policy   --role-name EKS-CloudWatchAgent-Role   --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
-
+```
 
 =======================
-
+```
 eksctl utils associate-iam-oidc-provider   --region us-east-1   --cluster my-cluster   --approve
  eksctl create iamserviceaccount   --name cloudwatch-agent   --namespace amazon-cloudwatch   --cluster my-cluster   --region us-east-1   --attach-policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy   --approve   --override-existing-serviceaccounts
+```
+```
   helm repo add eks https://aws.github.io/eks-charts
    helm repo update
    helm upgrade --install aws-cloudwatch-metrics eks/aws-cloudwatch-metrics   --namespace amazon-cloudwatch   --set clusterName=my-cluster   --set region=us-east-1   --set serviceAccount.create=false   --set serviceAccount.name=cloudwatch-agent
+```
+
     kubectl get pods -n amazon-cloudwatch
+    
    kubectl logs -n amazon-cloudwatch daemonset/aws-cloudwatch-metrics | head -n 50
+   
   kubectl logs aws-cloudwatch-metrics-q5tg7 -n amazon-cloudwatch
+  
     aws logs describe-log-groups --log-group-name-prefix /aws/containerinsights/my-cluster
     ===================================================
 
