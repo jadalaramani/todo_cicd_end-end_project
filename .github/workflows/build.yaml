@@ -31,9 +31,15 @@ jobs:
         working-directory: ./backend
         run: npm install
 
-      - name: Run backend tests
+      - name: Start backend in background
         working-directory: ./backend
-        run: npm start  # adjust if your test command is different
+        run: |
+         nohup node server.js > server.log 2>&1 &
+         sleep 5
+
+      - name: Health check endpoint
+        run: curl --fail http://localhost:3000 || exit 1
+
 
   build_and_push_image:
     name: Build & Push Docker Image
