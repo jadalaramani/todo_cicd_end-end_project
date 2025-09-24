@@ -1,0 +1,103 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  DOCKER_IMAGE_NAME: yourdockeruser/todoapp   # change this
+  AWS_REGION: us-east-1
+  EKS_CLUSTER_NAME: your-cluster-name
+  # Add other env as needed
+
+jobs:
+  build_and_test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies (backend)
+        working-directory: ./backend
+        run: npm install
+
+      - name: Run backend tests
+        working-directory: ./backend
+        run: npm test   # adjust if your test command is different
+
+      # Optionally lint, static analysis
+      - name: Lint (if applicable)
+        working-directory: ./backend
+        run: npm run lint  # if you have a lint script
+
+  build_and_push_image:
+    name: Build & Push Docker Image
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and tag Docker image
+        run: |
+          docker build -t $DOCKER_IMAGE_NAME:${{ github.sha }} .
+          docker tag $DOCKER_IMAGE_NAME:${{ github.sha }} $DOCKER_IMAGE_NAME:latest
+
+      - name: Push images
+        run: |
+          docker push $DOCKER_IMAGE_NAME:${{ github.sha }}
+          docker push $DOCKER_IMAGE_NAME:latest
+
+  deploy:
+    name: Deploy to EKS
+    needs: build_and_push_image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: v1.27.0  # or the version you need
+
+      - name: Setup eksctl (if needed)
+        run: |
+          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /usr/local/bin
+          chmod +x /usr/local/bin/eksctl
+
+      - name: Update kubeconfig
+        run: |
+          eksctl utils write-kubeconfig --cluster $EKS_CLUSTER_NAME --region $AWS_REGION
+
+      - name: Deploy via Helm
+        run: |
+          helm upgrade --install todo-app ./helm/chart-dir \
+            --set image.repository=$DOCKER_IMAGE_NAME \
+            --set image.tag=${{ github.sha }} \
+            --namespace your-namespace \
+            --create-namespace
+
