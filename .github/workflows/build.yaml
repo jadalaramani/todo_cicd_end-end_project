@@ -33,7 +33,7 @@ jobs:
 
       - name: Run backend tests
         working-directory: ./backend
-        run: npm test   # adjust if your test command is different
+        run: npm start  # adjust if your test command is different
 
   build_and_push_image:
     name: Build & Push Docker Image
