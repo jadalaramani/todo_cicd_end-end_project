@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  DOCKER_IMAGE_NAME: yourdockeruser/todoapp   # change this
+  DOCKER_IMAGE_NAME: ramanijadala/todoapp   # change this
   AWS_REGION: us-east-1
   EKS_CLUSTER_NAME: your-cluster-name
   # Add other env as needed
@@ -34,11 +34,6 @@ jobs:
       - name: Run backend tests
         working-directory: ./backend
         run: npm test   # adjust if your test command is different
-
-      # Optionally lint, static analysis
-      - name: Lint (if applicable)
-        working-directory: ./backend
-        run: npm run lint  # if you have a lint script
 
   build_and_push_image:
     name: Build & Push Docker Image
