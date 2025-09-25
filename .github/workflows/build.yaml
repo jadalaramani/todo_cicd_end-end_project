@@ -11,7 +11,7 @@ on:
 env:
   DOCKER_IMAGE_NAME: ramanijadala/todoapp   # change this
   AWS_REGION: us-east-1
-  EKS_CLUSTER_NAME: your-cluster-name
+  EKS_CLUSTER_NAME: cluster
   # Add other env as needed
 
 jobs:
@@ -86,21 +86,16 @@ jobs:
             eksctl version
     
       - name: Update kubeconfig for EKS
-        run: eksctl utils write-kubeconfig --cluster todo-cluster --region us-east-1
+        run: eksctl utils write-kubeconfig --cluster cluster --region us-east-1
     
       - name: Verify cluster nodes
         run: kubectl get nodes
-    
-      - name: Deploy with kubectl
-        run: |
-            kubectl apply -f k8s/deployment.yaml
-            kubectl apply -f k8s/service.yaml
 
       - name: Deploy via Helm
         run: |
-          helm upgrade --install todo-app ./helm/chart-dir \
+          helm upgrade --install todo-app ./helm/
             --set image.repository=$DOCKER_IMAGE_NAME \
             --set image.tag=${{ github.sha }} \
-            --namespace your-namespace \
+            --namespace todo \
             --create-namespace
 
