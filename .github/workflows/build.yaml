@@ -98,4 +98,6 @@ jobs:
             --set image.tag=${{ github.sha }} \
             --namespace todo \
             --create-namespace
+            --set service.type=ClusterIP \
+            --set service.port=3000
 
