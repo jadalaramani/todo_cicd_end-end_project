@@ -78,21 +78,23 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: v1.27.0  # or the version you need
-
-      - name: Setup eksctl (if needed)
+          aws-region: us-east-1
+          
+      - name: Install eksctl
         run: |
-          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /usr/local/bin
-          chmod +x /usr/local/bin/eksctl
-
-      - name: Update kubeconfig
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /usr/local/bin
+            eksctl version
+    
+      - name: Update kubeconfig for EKS
+        run: eksctl utils write-kubeconfig --cluster todo-cluster --region us-east-1
+    
+      - name: Verify cluster nodes
+        run: kubectl get nodes
+    
+      - name: Deploy with kubectl
         run: |
-          eksctl utils write-kubeconfig --cluster $EKS_CLUSTER_NAME --region $AWS_REGION
+            kubectl apply -f k8s/deployment.yaml
+            kubectl apply -f k8s/service.yaml
 
       - name: Deploy via Helm
         run: |
