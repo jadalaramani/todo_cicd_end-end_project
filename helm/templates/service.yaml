@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-svc
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.service.type | default "ClusterIP" }}
   selector:
     app: {{ .Release.Name }}
   ports:
     - name: http
-      port: {{ .Values.service.port | default 3000  }}
+      port: {{ .Values.service.port | default 3000 }}
       targetPort: 3000
       protocol: TCP
