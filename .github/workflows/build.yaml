@@ -95,7 +95,7 @@ jobs:
             --set image.repository=$DOCKER_IMAGE_NAME \
             --set image.tag=${{ github.sha }} \
             --namespace todo \
-            --create-namespace
+            --create-namespace \
             --set service.type=ClusterIP \
             --set service.port=3000
 
