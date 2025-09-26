@@ -90,7 +90,8 @@ jobs:
 
       - name: Deploy via Helm
         run: |
-          helm upgrade --install todo-app ./helm/Values.yaml \
+          helm upgrade --install todo-app ./helm \
+            -f ./helm/values.yaml \
             --set image.repository=$DOCKER_IMAGE_NAME \
             --set image.tag=${{ github.sha }} \
             --namespace todo \
