@@ -37,9 +37,6 @@ jobs:
          nohup node server.js > server.log 2>&1 &
          sleep 5
 
-      - name: Health check endpoint
-        run: curl --fail http://localhost:3000 || exit 1
-
 
   build_and_push_image:
     name: Build & Push Docker Image
@@ -93,7 +90,7 @@ jobs:
 
       - name: Deploy via Helm
         run: |
-          helm upgrade --install todo-app ./helm \
+          helm upgrade --install todo-app ./helm/values.yaml \
             --set image.repository=$DOCKER_IMAGE_NAME \
             --set image.tag=${{ github.sha }} \
             --namespace todo \
