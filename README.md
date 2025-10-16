@@ -1,6 +1,4 @@
-It’s a full-stack To-Do list application designed primarily to demonstrate a complete DevOps CI/CD pipeline with Kubernetes deployment. Here's a breakdown 
-
-of the project components and objective
+It’s a full-stack To-Do list application designed primarily to demonstrate a complete DevOps CI/CD pipeline with Kubernetes deployment.
 
 # todo_cicd_end-end_project
 
