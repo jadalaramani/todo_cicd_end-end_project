@@ -11,7 +11,7 @@ on:
 env:
   DOCKER_IMAGE_NAME: ramanijadala/todo-app   # change this
   AWS_REGION: us-east-1
-  EKS_CLUSTER_NAME: cluster
+  EKS_CLUSTER_NAME: todo-cluster
   # Add other env as needed
 
 jobs:
@@ -83,7 +83,7 @@ jobs:
             eksctl version
     
       - name: Update kubeconfig for EKS
-        run: eksctl utils write-kubeconfig --cluster cluster --region us-east-1
+        run: eksctl utils write-kubeconfig --cluster todo-cluster --region us-east-1
     
       - name: Verify cluster nodes
         run: kubectl get nodes
