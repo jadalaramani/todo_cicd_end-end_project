@@ -213,7 +213,7 @@ eksctl create cluster --name my-cluster
 
 github url for setup :
 ```
-https://github.com/adarsh0331/Eks_Cluster_with_terraform.git
+https://github.com/jadalaramani/eks_setup_terraform.git
 ```
 
 -  S3 BUCKET CREATION ( Some times you may get bucket name confilt , as s3 bucket name is globally unique ) 
